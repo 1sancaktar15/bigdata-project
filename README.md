@@ -1,5 +1,3 @@
-README dosyan için temel ve açıklayıcı bir şablon hazırladım. Ödev PDF’ini görmediğim için genel büyük veri projesi ve senin anlattıkların üzerinden uyarladım. İstersen, PDF’den önemli detayları paylaşırsan daha spesifik hale getirebilirim.
-
 # Big Data Project
 
 Bu proje, büyük veri teknolojileri kullanarak **MinIO üzerinde saklanan satın alma verilerinin** analizi ve sonuçların PostgreSQL veritabanına kaydedilmesini kapsamaktadır. Proje kapsamında Apache Kafka, Spark, Airflow, MongoDB, MinIO ve Jupyter Notebook gibi araçlar Docker ortamında entegre edilmiştir.
