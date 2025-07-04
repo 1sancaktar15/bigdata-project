@@ -1,44 +1,110 @@
 # Big Data Project
 
-Bu proje, büyük veri teknolojileri kullanarak **MinIO üzerinde saklanan satın alma verilerinin** analizi ve sonuçların PostgreSQL veritabanına kaydedilmesini kapsamaktadır. Proje kapsamında Apache Kafka, Spark, Airflow, MongoDB, MinIO ve Jupyter Notebook gibi araçlar Docker ortamında entegre edilmiştir.
+Bu proje, modern büyük veri teknolojileriyle gerçek zamanlı veri üretimi, akışı, işlenmesi, analizi ve sonuçların kalıcı veri tabanlarına kaydedilmesini kapsamaktadır. Tüm bileşenler Docker üzerinde entegre çalışır ve aşağıdaki iş akışını gerçekleştirir:
 
-## İçindekiler
+---
 
-- `docker-compose.yaml`: Proje bileşenlerinin Docker ile kurulumu ve konfigürasyonu  
-- `notebooks/minio_parquet_read.ipynb`: MinIO’dan Parquet dosyalarının okunması, verilerin Spark ile analizi ve PostgreSQL’e yazılması  
-- `fastapi-app/`: Kafka ile entegre çalışan FastAPI uygulaması  
-- `airflow/`: Apache Airflow DAG’ları ve konfigürasyonu  
+## Proje Akışı ve Bileşenler
 
-## Proje Adımları
+1. **FastAPI Web API**
+    - Kullanıcı etkinlikleri ve satın alma işlemleri için iki endpoint:
+        - `PUT /SendEvent`: Tekil kullanıcı etkinliği (UserId, SessionId, EventName, TimeStamp, Attributes, ProductId, Price, Discount)
+        - `POST /PurchasedItems`: Birden fazla satın alma kaydı (SessionId, TimeStamp, UserId, TotalPrice, OrderId, Products[ProductId, ItemCount, ItemPrice, ItemDiscount], PaymentType)
+    - Gelen verileri Kafka’da iki ayrı topic’e iletir: `UserEvents` ve `PurchasedItem`.
 
-1. **MinIO’dan Veri Okuma:** Satın alma verileri Parquet formatında MinIO S3 bucket’ından PySpark ile okunur.  
-2. **Veri Analizi:**  
-   - En çok satılan ürünler  
-   - En çok tercih edilen ödeme tipi  
-   - Son 1 saatte en yüksek tutarlı siparişi veren top 10 müşteri  
-   - Aynı ürünü birden çok kez satın alan müşteriler ve birden çok aldıkları ürünler  
-3. **Veri Kaydetme:** Analiz sonuçları PostgreSQL veritabanındaki tablolara yazılır.  
-4. **SQL Sorguları:** PostgreSQL’de en çok tekrar tekrar satın alınan en popüler ilk 10 ürün sorgusu yazılır ve sonuçlar Jupyter Notebook’ta gösterilir.  
+2. **Data Generator**
+    - Faker kütüphanesi ile rastgele UserEvent ve PurchasedItem verisi üretir.
+    - Her saniye FastAPI’ye yeni kayıtlar gönderir.
+
+3. **Apache Kafka**
+    - Gerçek zamanlı veri akışı için iki topic: `UserEvents` ve `PurchasedItem`.
+
+4. **Airflow DAG**
+    - Her 2 dakikada bir Kafka’dan UserEvents verilerini toplar ve MongoDB’ye kaydeder.
+    - Ardından MongoDB’de kullanıcı başına event türü sayısını aggregate edip başka bir collection’a yazar.
+
+5. **MongoDB**
+    - UserEvents ve event count aggregation sonuçlarını saklar.
+
+6. **PySpark Streaming**
+    - Kafka’daki `PurchasedItem` topic’ine subscribe olur.
+    - Gelen satın alma verilerini MinIO S3 bucket’ına Parquet formatında yazar.
+
+7. **MinIO (S3 Uyumlu Depolama)**
+    - PySpark ile yazılan satın alma verilerini saklar.
+
+8. **Jupyter Notebook ile Analiz**
+    - MinIO’daki Parquet dosyalarını Spark ile okur.
+    - Analizler:
+        - En çok satılan ürünler
+        - En çok tercih edilen ödeme tipi
+        - Son 1 saatte en yüksek tutarlı siparişi veren top 10 müşteri
+        - Aynı ürünü birden çok kez satın alan müşteriler ve ürünler (**bu analiz Postgres’e yazılır**)
+    - Analiz sonuçlarını PostgreSQL’e kaydeder.
+
+9. **PostgreSQL**
+    - Analiz sonuçlarının kalıcı olarak saklandığı ilişkisel veritabanı.
+    - Ek bir notebook ile, Postgres’teki verilerden:
+        - En çok tekrar tekrar satın alınan en popüler ilk 10 ürün SQL ile bulunur.
+
+---
 
 ## Kullanılan Teknolojiler
 
-- Apache Kafka  
-- Apache Spark (PySpark)  
-- Apache Airflow  
-- PostgreSQL  
-- MongoDB  
-- MinIO  
-- FastAPI  
-- Jupyter Notebook  
-- Docker & Docker Compose  
+- FastAPI
+- Faker (Data Generator)
+- Apache Kafka
+- Apache Airflow
+- MongoDB
+- Apache Spark (PySpark)
+- MinIO
+- PostgreSQL
+- Jupyter Notebook
+- Docker & Docker Compose
 
-## Çalıştırma Talimatları
+---
 
-1. Proje dizininde `docker-compose up -d` komutu ile tüm servisleri başlatın.  
-2. `notebooks/minio_parquet_read.ipynb` dosyasını Jupyter Notebook üzerinden açarak analizleri çalıştırın.  
-3. PostgreSQL veritabanına yazılan sonuçları kontrol edin.  
-4. Airflow arayüzü ile DAG’ların durumunu takip edin.  
+## Kurulum ve Çalıştırma
 
-## İletişim
+1. **Tüm servisleri başlatın:**
+    ```
+    docker-compose up -d
+    ```
+2. **Data Generator’ı başlatın:**  
+   (API’ye sürekli veri göndermeye başlar)
+3. **Airflow, Spark ve diğer servislerin loglarını kontrol edin.**
+4. **Jupyter Notebook’u açıp analiz adımlarını çalıştırın.**
+5. **PostgreSQL’de analiz sonuçlarını ve SQL sorgularını inceleyin.**
 
-Proje ile ilgili sorularınız için [GitHub Issues](https://github.com/1sancaktar15/bigdata-project/issues) üzerinden iletişime geçebilirsiniz.
+---
+
+## Dizin Yapısı
+
+- `docker-compose.yaml` : Tüm servislerin Docker konfigürasyonu
+- `fastapi-app/` : FastAPI uygulaması kodları
+- `data-generator/` : Faker ile veri üreten Python scripti
+- `airflow/` : Airflow DAG’ları ve konfigürasyonları
+- `spark-app/` : PySpark ile Kafka’dan MinIO’ya veri yazan kod
+- `notebooks/` : Analiz ve SQL notebookları
+
+---
+
+## Analizler ve Sonuçlar
+
+- **En çok satılan ürünler**
+- **En çok tercih edilen ödeme tipi**
+- **Son 1 saatte en yüksek tutarlı siparişi veren top 10 müşteri**
+- **Aynı ürünü birden çok kez satın alan müşteriler ve ürünler** (Postgres’e yazılır)
+- **En çok tekrar tekrar satın alınan ilk 10 ürün** (SQL ile Postgres’ten çekilir)
+
+---
+
+## Katkı ve İletişim
+
+Her türlü soru ve öneriniz için [GitHub Issues](https://github.com/1sancaktar15/bigdata-project/issues) üzerinden iletişime geçebilirsiniz.
+
+---
+
+> Proje dokümantasyonu ve iş akışı, [ProjeOdeviBigData.pdf][1] dokümanındaki gereksinimleri tam olarak karşılayacak şekilde hazırlanmıştır.
+
+[1]: https://github.com/1sancaktar15/bigdata-project/blob/main/ProjeOdeviBigData.pdf
