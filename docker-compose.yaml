@@ -59,7 +59,6 @@ services:
       - ./airflow/dags:/opt/airflow/dags
     command: bash -c "airflow db upgrade && airflow scheduler & airflow webserver"
 
-
   minio:
     image: minio/minio
     command: server /data --console-address ":9001"
@@ -85,10 +84,10 @@ services:
     command: >
       bash -c "
       spark-submit
-      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.apache.hadoop:hadoop-aws:3.3.4 
-      --conf spark.hadoop.fs.s3a.endpoint=http://minio:9000 
-      --conf spark.hadoop.fs.s3a.path.style.access=true 
-      --conf spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem 
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.11.375,org.postgresql:postgresql:42.6.0
+      --conf spark.hadoop.fs.s3a.endpoint=http://minio:9000
+      --conf spark.hadoop.fs.s3a.path.style.access=true
+      --conf spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
       /app/pyspark_minio_writer.py
       "
 
@@ -100,6 +99,9 @@ services:
       - ./notebooks:/home/jovyan/work
     environment:
       - JUPYTER_ENABLE_LAB=yes
+      - PYSPARK_SUBMIT_ARGS=--packages org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.11.375,org.postgresql:postgresql:42.6.0 pyspark-shell
+    command: >
+      start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
 
 volumes:
   postgres_data:

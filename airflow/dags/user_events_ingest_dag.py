@@ -30,7 +30,7 @@ def kafka_to_mongo():
         value_deserializer=lambda x: json.loads(x.decode('utf-8')),
         consumer_timeout_ms=10000
     )
-    # DÜZELTİLEN SATIR:
+    # DÜZELTİLEN SATIR -localhost yerine mongo idi:
     mongo_client = MongoClient('mongodb://mongo:27017/')
     db = mongo_client.bigdata
     collection = db.user_events_raw
