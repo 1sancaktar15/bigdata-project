@@ -1,8 +1,10 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 from datetime import datetime, timedelta
 from kafka import KafkaConsumer
 from pymongo import MongoClient
+from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 import json
 import time
 import os
@@ -30,7 +32,6 @@ def kafka_to_mongo():
         value_deserializer=lambda x: json.loads(x.decode('utf-8')),
         consumer_timeout_ms=10000
     )
-    # DÜZELTİLEN SATIR -localhost yerine mongo idi:
     mongo_client = MongoClient('mongodb://mongo:27017/')
     db = mongo_client.bigdata
     collection = db.user_events_raw
@@ -57,7 +58,6 @@ def kafka_to_mongo():
     mongo_client.close()
 
 def aggregate_events():
-    # DÜZELTİLEN SATIR:
     mongo_client = MongoClient('mongodb://mongo:27017/')
     db = mongo_client.bigdata
     raw_collection = db.user_events_raw
@@ -107,4 +107,12 @@ with DAG(
         python_callable=aggregate_events
     )
 
-    ingest_task >> aggregate_task
+    notify_slack = SlackWebhookOperator(
+        task_id='slack_notification',
+        slack_webhook_conn_id='slack_conn',  # Airflow'da eklediğin bağlantı adı
+        message="✅ Airflow: UserEvents aggregation başarıyla tamamlandı!",
+        channel="#alerts"  # Slack kanal adını güncelle
+    )
+
+
+    ingest_task >> aggregate_task >> notify_slack
