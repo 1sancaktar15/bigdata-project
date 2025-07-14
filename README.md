@@ -99,7 +99,6 @@ Bu proje, modern büyük veri teknolojileriyle gerçek zamanlı veri üretimi, a
 
 ---
 
----
 
 ## Ekstra Geliştirmeler (Ödev Kapsamı Dışında)
 
@@ -109,8 +108,13 @@ Proje gereksinimlerinin ötesinde yapılan ek analiz ve görselleştirme çalı�
 - Ürün verilerinin `explode` edilerek pandas DataFrame’e dönüştürülmesi  
 - En çok satılan 10 ürünün bar grafiği ile görselleştirilmesi  
 - Ödeme tiplerinin pasta grafiği ile sunulması  
-- Grafiklerde estetik ve okunabilirlik odaklı iyileştirmeler yapıldı
+- Grafiklerde estetik ve okunabilirlik odaklı iyileştirmeler yapıldı ve kaydedildi.
 
+### En Çok Satılan Ürünler
+![Top Products](notebooks/top_10_products.png)
+
+### Ödeme Türleri
+![Ödeme Türleri](notebooks/payment_types.png)
 
 ## Katkı ve İletişim
 
