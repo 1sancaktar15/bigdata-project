@@ -99,6 +99,19 @@ Bu proje, modern büyük veri teknolojileriyle gerçek zamanlı veri üretimi, a
 
 ---
 
+---
+
+## Ekstra Geliştirmeler (Ödev Kapsamı Dışında)
+
+Proje gereksinimlerinin ötesinde yapılan ek analiz ve görselleştirme çalışmaları:
+
+- PySpark ile MinIO’daki Parquet dosyalarının okunması  
+- Ürün verilerinin `explode` edilerek pandas DataFrame’e dönüştürülmesi  
+- En çok satılan 10 ürünün bar grafiği ile görselleştirilmesi  
+- Ödeme tiplerinin pasta grafiği ile sunulması  
+- Grafiklerde estetik ve okunabilirlik odaklı iyileştirmeler yapıldı
+
+
 ## Katkı ve İletişim
 
 Her türlü soru ve öneriniz için [GitHub Issues](https://github.com/1sancaktar15/bigdata-project/issues) üzerinden iletişime geçebilirsiniz.
