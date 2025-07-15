@@ -116,6 +116,23 @@ Proje gereksinimlerinin ötesinde yapılan ek analiz ve görselleştirme çalı�
 ### Ödeme Türleri
 ![Ödeme Türleri](notebooks/payment_types.png)
 
+---
+
+## 🛰️ Airflow Slack Bildirim Otomasyonu
+
+Bu projede, **Airflow DAG**’ı şu işlemleri gerçekleştirir:
+
+1. Kafka’dan `UserEvents` verilerini çeker
+2. MongoDB’ye kaydeder
+3. MongoDB üzerinde **aggregation** işlemleri uygular
+4. Tüm işlemler **başarıyla tamamlandığında**, Slack kanalına otomatik bir bildirim gönderir ✅
+
+### 🎯 Örnek Bildirim Mesajı:
+```text
+✅ Airflow: UserEvents aggregation başarıyla tamamlandı!
+```
+---
+
 ## Katkı ve İletişim
 
 Her türlü soru ve öneriniz için [GitHub Issues](https://github.com/1sancaktar15/bigdata-project/issues) üzerinden iletişime geçebilirsiniz.
