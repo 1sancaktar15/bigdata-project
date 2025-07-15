@@ -37,14 +37,15 @@ async def send_purchases():
             products.append({
                 "ProductId": str(uuid.uuid4()),
                 "ItemCount": random.randint(1, 5),
-                "ItemPrice": round(random.uniform(20, 300), 2),
+                "ItemPrice": round(random.uniform(200, 1200), 2),   # Min 200: Bu sayede alışveriş toplamı daha sık yüksek olur
                 "ItemDiscount": round(random.uniform(0, 30), 2)
             })
+        total = sum(p["ItemPrice"] * p["ItemCount"] for p in products)
         purchases.append({
             "SessionId": str(uuid.uuid4()),
             "TimeStamp": fake.iso8601(),
             "UserId": str(uuid.uuid4()),
-            "TotalPrice": sum(p["ItemPrice"] * p["ItemCount"] for p in products),
+            "TotalPrice": total,
             "OrderId": str(uuid.uuid4()),
             "PaymentType": random.choice(payment_types),
             "Products": products
@@ -52,6 +53,7 @@ async def send_purchases():
     async with httpx.AsyncClient() as client:
         resp = await client.post(f"{API_URL}/purchased-items", json=purchases)
         print("Purchases:", resp.json())
+
 
 # Sürekli veri üret
 async def main_loop():
