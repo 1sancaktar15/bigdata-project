@@ -72,24 +72,19 @@ services:
       - minio_data:/data
 
   pyspark:
-    image: bitnami/spark:3.5
+    build: ./spark-app   # <--- burada Dockerfile ile kendi imajını build edeceğiz!
+    environment:
+      - SPARK_MODE=master
     volumes:
       - ./spark-app:/app
-    environment:
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin
-    depends_on:
-      - kafka
-      - minio
-    command: >
-      bash -c "
-      spark-submit
-      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.11.375,org.postgresql:postgresql:42.6.0
-      --conf spark.hadoop.fs.s3a.endpoint=http://minio:9000
-      --conf spark.hadoop.fs.s3a.path.style.access=true
-      --conf spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
-      /app/pyspark_minio_writer.py
-      "
+    command:
+      [
+        "/opt/bitnami/spark/bin/spark-submit",
+        "--master", "local[*]",
+        "--packages",
+        "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262",
+        "/app/pyspark_minio_writer.py"
+      ]
 
   jupyter:
     image: jupyter/pyspark-notebook
@@ -99,7 +94,7 @@ services:
       - ./notebooks:/home/jovyan/work
     environment:
       - JUPYTER_ENABLE_LAB=yes
-      - PYSPARK_SUBMIT_ARGS=--packages org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.11.375,org.postgresql:postgresql:42.6.0 pyspark-shell
+      - PYSPARK_SUBMIT_ARGS=--packages org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262,org.postgresql:postgresql:42.6.0 pyspark-shell
     command: >
       start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
 
