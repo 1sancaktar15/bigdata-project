@@ -16,9 +16,10 @@ while producer is None:
             value_serializer=lambda v: json.dumps(v).encode('utf-8')
         )
         print("✅ Kafka bağlantısı kuruldu.")
-    except Exception as e:
+    except Exception:
         print("❌ Kafka hazır değil, tekrar denenecek...")
         time.sleep(5)
+
 
 # MODELLER
 
@@ -27,6 +28,7 @@ class Attributes(BaseModel):
     Price: float
     Discount: float
 
+
 class Event(BaseModel):
     UserId: str
     SessionId: str
@@ -34,11 +36,13 @@ class Event(BaseModel):
     TimeStamp: str
     Attributes: Attributes
 
+
 class Product(BaseModel):
     ProductId: str
     ItemCount: int
     ItemPrice: float
     ItemDiscount: float
+
 
 class Purchase(BaseModel):
     SessionId: str
@@ -49,12 +53,14 @@ class Purchase(BaseModel):
     PaymentType: str
     Products: List[Product]
 
+
 # ENDPOINTLER
 
 @app.put("/send-event")
 async def send_event(event: Event):
     producer.send("UserEvents", event.dict())
     return {"status": "event sent"}
+
 
 @app.post("/purchased-items")
 async def purchased_items(purchases: List[Purchase]):
