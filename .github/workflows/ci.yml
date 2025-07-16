@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        run: |
+          pip install flake8
+          pip install -r fastapi-app/requirements.txt || true
+          pip install -r data-generator/requirements.txt || true
+          pip install -r spark-app/requirements.txt || true
+
+      - name: Run lint (flake8)
+        run: |
+          flake8 fastapi-app/ data-generator/ spark-app/ --max-line-length=120
