@@ -100,7 +100,7 @@ Bu proje, modern büyük veri teknolojileriyle gerçek zamanlı veri üretimi, a
 ---
 
 
-## Ekstra Geliştirmeler (Ödev Kapsamı Dışında)
+# Ekstra Geliştirmeler (Ödev Kapsamı Dışında)
 
 Proje gereksinimlerinin ötesinde yapılan ek analiz ve görselleştirme çalışmaları:
 
@@ -118,32 +118,30 @@ Proje gereksinimlerinin ötesinde yapılan ek analiz ve görselleştirme çalı�
 
 ---
 
-# 🛰️ Airflow ve PySpark Slack Bildirim Otomasyonu
+## 🛰️ Airflow ve PySpark Slack Bildirim Otomasyonu
 
 Bu projede uçtan uca veri akışı ve otomasyonunu takip edebilmeniz için, **Slack bildirimleri** hem **Airflow** hem de **PySpark** tarafından otomatik olarak gönderilmektedir.
 
----
 
-## 📡 1. Airflow DAG’ı ile Bildirim
+### 📡 1. Airflow DAG’ı ile Bildirim
 
 - **Kafka**’dan `UserEvents` verileri toplanır.
 - Veriler **MongoDB**’ye kaydedilir ve **aggregation** işlemleri gerçekleştirilir.
 - Tüm işlemler başarıyla tamamlandığında, **Slack kanalına otomatik bildirim** gider.
 
-### 🎯 Örnek Bildirim Mesajı:
+#### 🎯 Örnek Bildirim Mesajı:
 ```text
 ✅ Airflow: UserEvents aggregation başarıyla tamamlandı!
 ```
----
 
 
-## ⚡ 2. PySpark ile Büyük Tutar Alışveriş Bildirimi
+### ⚡ 2. PySpark ile Büyük Tutar Alışveriş Bildirimi
 
 - **PySpark**, Kafka’daki `PurchasedItem` topic’inden alışveriş verilerini **sürekli izler**.
 - Toplam tutarı **10.000 TL**’den büyük olan alışverişleri algılar ve Slack’in `#alerts` kanalına otomatik olarak bildirir.
 - Küçük işlemler için bildirim gönderilmez; yalnızca dikkat çekici işlemler öne çıkar.
 
-**Örnek PySpark Bildirim Mesajı:**
+#### 🎯 Örnek PySpark Bildirim Mesajı:
 ```text
 🚨 Büyük Alışveriş Uyarısı!
 Kullanıcı: 2fef2298-d574-4cfd-b106-07a3d1a3da35
@@ -152,18 +150,36 @@ Tutar: 10618.65 TL
 ```
 
 
----
-
 ## 💬 Slack’te Gelen Otomatik Bildirimler
 
 Aşağıda, sistemin çalışır durumda olduğu ve yüksek tutarlı alışverişlerde Slack’e başarılı şekilde bildirim gönderdiği bir kanal ekran görüntüsü bulunmaktadır:
 
 ![Slack Otomatik Bildirim](gorseller/SLACK.png)
 
----
 
 Bu geliştirme ile, gerçek zamanlı veri akışı ve önemli durumlar için ekibe haber verme yeteneğiyle **modern, profesyonel bir otomasyon örneği** sunar. Hem analiz hem de monitoring için kolayca genişletilebilir yapıdadır.
 
+---
+
+## 🛡 Veri Kalitesi ve Hatalı Veri Yönetimi
+
+Veri akışında düşük kaliteli, eksik ya da hatalı verilerin üretim hattını bozmadan izlenmesi sağlanmıştır.  
+**PySpark Streaming** tarafında, satın alma verileri alınırken gelen kayıtlar anlık olarak kontrol edilir:
+
+- **Geçerli (Valid) kayıtlar:**  
+  Zorunlu alanları (SessionId, UserId, OrderId, TotalPrice) eksiksiz ve TotalPrice > 0 olanlar,  
+  otomatik olarak MinIO’daki `purchased-items/valid/` klasörüne Parquet formatında yazılır.
+
+- **Hatalı (Invalid) kayıtlar:**  
+  Eksik, boş, null veya TotalPrice ≤ 0 olan kayıtlar,  
+  veri kaybı olmaması amacıyla `purchased-items/invalid/` klasörüne yazılır.
+
+Bu sayede:
+- İş akışı sadece kaliteli verilerle devam eder.
+- Hatalı kayıtlar izlenebilir ve gerektiğinde analiz için kullanılabilir.
+
+
+---
 
 ## Katkı ve İletişim
 
