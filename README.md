@@ -118,20 +118,52 @@ Proje gereksinimlerinin ötesinde yapılan ek analiz ve görselleştirme çalı�
 
 ---
 
-## 🛰️ Airflow Slack Bildirim Otomasyonu
+# 🛰️ Airflow ve PySpark Slack Bildirim Otomasyonu
 
-Bu projede, **Airflow DAG**’ı şu işlemleri gerçekleştirir:
+Bu projede uçtan uca veri akışı ve otomasyonunu takip edebilmeniz için, **Slack bildirimleri** hem **Airflow** hem de **PySpark** tarafından otomatik olarak gönderilmektedir.
 
-1. Kafka’dan `UserEvents` verilerini çeker
-2. MongoDB’ye kaydeder
-3. MongoDB üzerinde **aggregation** işlemleri uygular
-4. Tüm işlemler **başarıyla tamamlandığında**, Slack kanalına otomatik bir bildirim gönderir ✅
+---
+
+## 📡 1. Airflow DAG’ı ile Bildirim
+
+- **Kafka**’dan `UserEvents` verileri toplanır.
+- Veriler **MongoDB**’ye kaydedilir ve **aggregation** işlemleri gerçekleştirilir.
+- Tüm işlemler başarıyla tamamlandığında, **Slack kanalına otomatik bildirim** gider.
 
 ### 🎯 Örnek Bildirim Mesajı:
 ```text
 ✅ Airflow: UserEvents aggregation başarıyla tamamlandı!
 ```
 ---
+
+
+## ⚡ 2. PySpark ile Büyük Tutar Alışveriş Bildirimi
+
+- **PySpark**, Kafka’daki `PurchasedItem` topic’inden alışveriş verilerini **sürekli izler**.
+- Toplam tutarı **10.000 TL**’den büyük olan alışverişleri algılar ve Slack’in `#alerts` kanalına otomatik olarak bildirir.
+- Küçük işlemler için bildirim gönderilmez; yalnızca dikkat çekici işlemler öne çıkar.
+
+**Örnek PySpark Bildirim Mesajı:**
+```text
+🚨 Büyük Alışveriş Uyarısı!
+Kullanıcı: 2fef2298-d574-4cfd-b106-07a3d1a3da35
+Sipariş ID: caffa447-bee2-49c2-a573-088d68ad6f17
+Tutar: 10618.65 TL
+```
+
+
+---
+
+## 💬 Slack’te Gelen Otomatik Bildirimler
+
+Aşağıda, sistemin çalışır durumda olduğu ve yüksek tutarlı alışverişlerde Slack’e başarılı şekilde bildirim gönderdiği bir kanal ekran görüntüsü bulunmaktadır:
+
+![Slack Otomatik Bildirim](gorseller/SLACK.png)
+
+---
+
+Bu geliştirme ile, gerçek zamanlı veri akışı ve önemli durumlar için ekibe haber verme yeteneğiyle **modern, profesyonel bir otomasyon örneği** sunar. Hem analiz hem de monitoring için kolayca genişletilebilir yapıdadır.
+
 
 ## Katkı ve İletişim
 
