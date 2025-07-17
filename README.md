@@ -191,6 +191,15 @@ Bu analiz sayesinde, müşteri eğilimleri ve olası çapraz satış (cross-sell
 
 ---
 
+### Windows için Kolay Kurulum
+
+Tüm sistemi tek seferde başlatmak için ana dizindeki `run_project.bat` dosyasını **çift tıklayın**.
+
+Alternatif olarak bash ortamı olanlar (Mac/Linux/Git Bash) için:  
+`./run_project.sh`
+
+---
+
 ## Katkı ve İletişim
 
 Her türlü soru ve öneriniz için [GitHub Issues](https://github.com/1sancaktar15/bigdata-project/issues) üzerinden iletişime geçebilirsiniz.
