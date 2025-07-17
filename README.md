@@ -191,12 +191,20 @@ Bu analiz sayesinde, müşteri eğilimleri ve olası çapraz satış (cross-sell
 
 ---
 
-### Windows için Kolay Kurulum
+## 🚀 Kolay Kurulum
 
-Tüm sistemi tek seferde başlatmak için ana dizindeki `run_project.bat` dosyasını **çift tıklayın**.
+### 🪟 Windows Kullanıcıları İçin
 
-Alternatif olarak bash ortamı olanlar (Mac/Linux/Git Bash) için:  
-`./run_project.sh`
+Tüm sistemi tek seferde başlatmak için ana dizinde bulunan `run_project.bat` dosyasına çift tıklamanız yeterlidir.
+Kurulum ve başlatma işlemleri otomatik olarak gerçekleşecektir.
+
+### 🐧 MacOS / Linux / Git Bash Kullanıcıları İçin
+
+Bash ortamına sahipseniz, terminal üzerinden aşağıdaki komutu çalıştırarak projeyi başlatabilirsiniz:
+
+```bash
+./run_project.sh
+```
 
 ---
 
