@@ -208,6 +208,12 @@ Bash ortamına sahipseniz, terminal üzerinden aşağıdaki komutu çalıştıra
 
 ---
 
+## 📊 Proje İş Akış Diyagramı
+
+![Proje Akışı](gorseller/project_flow_diagram.png)
+
+---
+
 ## Katkı ve İletişim
 
 Her türlü soru ve öneriniz için [GitHub Issues](https://github.com/1sancaktar15/bigdata-project/issues) üzerinden iletişime geçebilirsiniz.
