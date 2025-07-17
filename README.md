@@ -210,7 +210,7 @@ Bash ortamına sahipseniz, terminal üzerinden aşağıdaki komutu çalıştıra
 
 ## 📊 Proje İş Akış Diyagramı
 
-![Proje Akışı](gorseller/project_flow_diagram.png)
+![Proje Akışı](gorseller/akis_diagram.png)
 
 ---
 
