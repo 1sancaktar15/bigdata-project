@@ -180,6 +180,14 @@ Bu sayede:
 - İş akışı sadece kaliteli verilerle devam eder.
 - Hatalı kayıtlar izlenebilir ve gerektiğinde analiz için kullanılabilir.
 
+---
+
+## 📦 Ekstra Analitik: En Çok Birlikte Alınan Ürün Çiftleri
+PySpark kullanılarak, müşterilerin en çok birlikte satın aldığı ürün çiftleri analiz edilmiştir.
+Aşağıdaki grafik, ürün öneri sistemi geliştirmesine temel olacak şekilde, birlikte en fazla alınan ilk 10 ürün çiftini göstermektedir:
+
+![En Çok Birlikte Alınan Ürün Çiftleri](notebooks/en_cok_birlikte_alan_ciftler.png)
+Bu analiz sayesinde, müşteri eğilimleri ve olası çapraz satış (cross-sell) fırsatları kolayca tespit edilebilir.
 
 ---
 
