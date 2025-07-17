@@ -1,3 +1,5 @@
+![CI](https://github.com/1sancaktar15/bigdata-project/actions/workflows/ci.yml/badge.svg)
+
 # Big Data Project
 
 Bu proje, modern büyük veri teknolojileriyle gerçek zamanlı veri üretimi, akışı, işlenmesi, analizi ve sonuçların kalıcı veri tabanlarına kaydedilmesini kapsamaktadır. Tüm bileşenler Docker üzerinde entegre çalışır ve aşağıdaki iş akışını gerçekleştirir:
