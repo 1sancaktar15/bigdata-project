@@ -212,6 +212,42 @@ Bash ortamına sahipseniz, terminal üzerinden aşağıdaki komutu çalıştıra
 
 ![Proje Akışı](gorseller/akis_diagram.png)
 
+## 🔍 Proje Mantıksal Akışı (Sade Anlatım)
+
+1. **Data Generator**, rastgele kullanıcı etkinliği ve satın alma verileri üretir.
+2. **FastAPI** bu verileri alır ve Kafka’daki ilgili topic’lere yollar.
+3. **Kafka**, verileri yayınlar:
+   - `UserEvents` → **Airflow DAG** tarafından alınır, MongoDB’ye kaydedilir ve analiz edilir.
+   - `PurchasedItem` → **PySpark Streaming** ile işlenir ve MinIO’ya yazılır.
+4. **Jupyter Notebook**, MinIO’daki verilerden analizler yapar ve sonuçları PostgreSQL’e yazar.
+5. **Airflow** ve **PySpark**, önemli durumlar için **Slack** kanalına otomatik bildirim gönderir.
+
+---
+
+## 👤 Gerçekçi Kullanıcı Senaryosu
+
+Aşağıda, sistemin işleyişini gerçek bir alışveriş deneyimiyle özetleyen örnek bir kullanıcı akışı bulabilirsiniz:
+
+1. **Kullanıcı siteye giriş yapar ve ürünlere göz atar.**  
+   → Sistem, her sayfa görüntülemede `PUT /SendEvent` üzerinden, kullanıcı, oturum ve ürün bilgileri içeren bir **UserEvent** kaydı oluşturur.
+
+2. **Kullanıcı bir ürünü sepete ekler.**  
+   → `PUT /SendEvent` ile `"AddedBasket"` eventi gönderilir ve ürün sepete alınır.
+
+3. **Kullanıcı siparişi tamamlar ve satın alır.**  
+   → Sepetteki ürünler, toplam ödeme, ödeme tipi gibi bilgilerle birlikte, tek bir API çağrısı ile (`POST /PurchasedItems`) sisteme iletilir.
+
+4. **Veri işlenir ve analiz süreçleri başlar.**  
+   → Tüm eventler ve satın alma kayıtları,  
+   **FastAPI → Kafka → Airflow/PySpark → MongoDB / MinIO → Jupyter / PostgreSQL** hattında otomatik şekilde akışa dahil olur.
+
+5. **Analiz ve otomatik bildirimler tetiklenir.**  
+   → Örneğin, büyük tutarlı bir alışveriş olduğunda Slack’e otomatik uyarı gönderilir.
+
+
+✅ **Kısacası:**  
+Bir müşteri sitede gezinip alışveriş yaptıkça, tüm veri gerçek zamanlı olarak sistemin tamamında **işlenir**, **saklanır**, **analiz edilir** ve **sonuçlar raporlanır**.
+
 ---
 
 ## Katkı ve İletişim
